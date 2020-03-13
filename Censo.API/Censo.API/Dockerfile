@@ -19,4 +19,8 @@ RUN dotnet publish "Censo.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV SQL_SERVER_HOST localhost
+ENV SQL_SERVER_DATABASE census
+ENV SQL_SERVER_USER sa
+ENV SQL_SERVER_PASSWORD Root@123
 ENTRYPOINT ["dotnet", "Censo.API.dll"]
