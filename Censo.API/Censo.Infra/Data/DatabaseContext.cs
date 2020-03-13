@@ -1,5 +1,6 @@
 ﻿namespace Censo.Infra.Data
 {
+    using Configurations;
     using Domain.Interfaces;
     using Domain.Model;
     using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,14 @@
             base.OnConfiguring(optionsBuilder);
 
             optionsBuilder.UseSqlServer($"Data Source={datasource};Initial Catalog={database};Persist Security Info=True;User ID={user};Password={password}");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new RegionConfiguration());
+            modelBuilder.ApplyConfiguration(new GenderConfiguration());
+            modelBuilder.ApplyConfiguration(new SchoolingConfiguration());
+            modelBuilder.ApplyConfiguration(new EthnicityConfiguration());
         }
     }
 }

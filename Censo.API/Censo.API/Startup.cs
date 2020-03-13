@@ -3,6 +3,7 @@ namespace Censo.API
     using Domain.Interfaces;
     using Domain.Interfaces.Data;
     using Infra.Data;
+    using Infra.Data.Repositories;
     using Infra.Environment;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

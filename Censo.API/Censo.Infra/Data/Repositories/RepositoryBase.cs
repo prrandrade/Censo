@@ -1,4 +1,4 @@
-﻿namespace Censo.Infra.Data
+﻿namespace Censo.Infra.Data.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;

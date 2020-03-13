@@ -7,7 +7,7 @@
     [Table("Census_Schooling")]
     public class SchoolingModel : IModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         [Required]

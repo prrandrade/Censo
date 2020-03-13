@@ -7,7 +7,7 @@
     [Table("Census_Ethnicity")]
     public class EthnicityModel : IModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         [Required]

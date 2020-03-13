@@ -1,6 +1,5 @@
-﻿namespace Censo.Infra.Data
+﻿namespace Censo.Infra.Data.Repositories
 {
-    using Domain.Interfaces;
     using Domain.Interfaces.Data;
     using Domain.Model;
 

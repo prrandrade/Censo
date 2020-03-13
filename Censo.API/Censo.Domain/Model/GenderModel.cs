@@ -7,7 +7,7 @@
     [Table("Census_Gender")]
     public class GenderModel : IModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         [Required]

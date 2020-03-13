@@ -7,7 +7,7 @@
     [Table("Census_Region")]
     public class RegionModel : IModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         [Required]
