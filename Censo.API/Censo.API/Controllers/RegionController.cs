@@ -17,38 +17,48 @@
             _repository = repository;
         }
 
+        /// <summary>
+        /// Obtém a identificação de uma região dado seu código
+        /// </summary>
+        /// <param name="id">Código da região</param>
+        /// <returns>Objeto com identificação e descrição da região</returns>
         [HttpGet("{id}")]
         public async Task<RegionModel> Get(int id)
         {
             return await _repository.GetAsync(id);
         }
 
+        /// <summary>
+        /// Obtém todas as regiões disponíveis para responder o censo
+        /// </summary>
+        /// <returns>Lista com todas as regiões e respectivos códigos</returns>
         [HttpGet]
         public async Task<IEnumerable<RegionModel>> GetAll()
         {
             return await _repository.GetAllAsync();
         }
 
+        /// <summary>
+        /// Cadastra uma região nova
+        /// </summary>
+        /// <param name="value">Objeto com descrição da região</param>
+        /// <returns>Objeto com identificação e descrição da região</returns>
         [HttpPost]
-        public async Task<ActionResult<RegionModel>> Post(RegionModel value)
+        public async Task<ActionResult<RegionModel>> Post([FromBody] RegionModel value)
         {
             var result = await _repository.CreateAsync(value);
             return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
         }
 
+        /// <summary>
+        /// Atualiza a descrição de uma região
+        /// </summary>
+        /// <param name="value">Objeto com identificação e descrição da região</param>
         [HttpPut]
         public async Task<ActionResult> Put(RegionModel value)
         {
             await _repository.UpdateAsync(value);
             return Ok();
         }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete(int id)
-        {
-            var result = await _repository.DeleteAsync(id);
-            return Ok(result);
-        }
-
     }
 }

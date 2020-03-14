@@ -68,7 +68,7 @@ namespace Censo.Infra.Migrations
                     LastName = table.Column<string>(nullable: true),
                     RegionId = table.Column<int>(nullable: true),
                     EthnicityId = table.Column<int>(nullable: true),
-                    GenderId = table.Column<int>(nullable: false),
+                    GenderId = table.Column<int>(nullable: true),
                     SchoolingId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -85,7 +85,7 @@ namespace Censo.Infra.Migrations
                         column: x => x.GenderId,
                         principalTable: "Census_Gender",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Census_Answers_Census_Region_RegionId",
                         column: x => x.RegionId,

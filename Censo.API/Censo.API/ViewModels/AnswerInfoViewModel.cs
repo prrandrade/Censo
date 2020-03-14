@@ -8,7 +8,7 @@
 
         public string LastName { get; set; }
 
-        public int GenderCode { get; set; }
+        public int? GenderCode { get; set; }
 
         public int? RegionCode { get; set; }
 

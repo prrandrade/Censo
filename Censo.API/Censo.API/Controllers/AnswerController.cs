@@ -30,7 +30,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult<AnswerViewModel>> Post(AnswerViewModel value)
+        public async Task<ActionResult<AnswerViewModel>> Post([FromBody] AnswerViewModel value)
         {
             var census = value.ToAnswerModel();
             var parents = value.RetrieveAnswerModelParents();

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Censo.Infra.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200314213907_Initial")]
+    [Migration("20200314223329_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace Censo.Infra.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("GenderId")
+                    b.Property<int?>("GenderId")
                         .HasColumnType("int");
 
                     b.Property<string>("LastName")
@@ -260,9 +260,7 @@ namespace Censo.Infra.Migrations
 
                     b.HasOne("Censo.Domain.Model.GenderModel", "Gender")
                         .WithMany()
-                        .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GenderId");
 
                     b.HasOne("Censo.Domain.Model.RegionModel", "Region")
                         .WithMany()

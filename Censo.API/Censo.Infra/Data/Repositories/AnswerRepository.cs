@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Domain;
     using Domain.Interfaces.Data;
     using Domain.Model;
     using LinqKit;
@@ -31,61 +32,73 @@
 
         public async Task<AnswerModel> CreateWithParentsAndChidrenAsync(AnswerModel model, IEnumerable<AnswerModel> parents, IEnumerable<AnswerModel> children)
         {
-            using (var transaction = DatabaseContext.Database.BeginTransaction())
+            await using var transaction = DatabaseContext.Database.BeginTransaction();
+            try
             {
-                try
+                // filling the remaining options, if this person is already recorded as a parent or child
+                var oldModel = await GetByNameAsync(model.FirstName, model.LastName);
+                if (oldModel == null)
                 {
-                    // filling the remaining options, if this person is already recorded as a parent or child
-                    var oldModel = await GetByNameAsync(model.FirstName, model.LastName);
-                    if (oldModel == null)
+                    await CreateAsync(model);
+                }
+                else
+                {
+                    DatabaseContext.Entry(oldModel).CurrentValues.SetValues(model);
+                    await DatabaseContext.SaveChangesAsync();
+                }
+
+                // saving parents
+                if (parents != null)
+                    foreach (var parent in parents)
                     {
-                        await CreateAsync(model);
-                    }
-                    else
-                    {
-                        DatabaseContext.Entry(oldModel).CurrentValues.SetValues(model);
+                        var updatedParent = await GetByNameAsync(parent.FirstName, parent.LastName) ?? await CreateAsync(parent);
+                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = updatedParent, Child = model});
                         await DatabaseContext.SaveChangesAsync();
                     }
 
-                    // saving parents
-                    if (parents != null)
-                        foreach (var parent in parents)
-                        {
-                            var updatedParent = await GetByNameAsync(parent.FirstName, parent.LastName) ?? await CreateAsync(parent);
-                            DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = updatedParent, Child = model});
-                            await DatabaseContext.SaveChangesAsync();
-                        }
+                // saving children
+                if (children != null)
+                    foreach (var child in children)
+                    {
+                        var updatedChild = await GetByNameAsync(child.FirstName, child.LastName) ?? await CreateAsync(child);
+                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = model, Child = updatedChild});
+                        await DatabaseContext.SaveChangesAsync();
+                    }
 
-                    // saving children
-                    if (children != null)
-                        foreach (var child in children)
-                        {
-                            var updatedChild = await GetByNameAsync(child.FirstName, child.LastName) ?? await CreateAsync(child);
-                            DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = model, Child = updatedChild});
-                            await DatabaseContext.SaveChangesAsync();
-                        }
-
-                    transaction.Commit();
-                   return model;
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    throw new ApplicationException("Error while saving this census anwser", ex);
-                }
+                await transaction.CommitAsync();
+                return model;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                throw new ApplicationException("Error while saving this census anwser", ex);
             }
         }
 
         #region Queries para filtragem estatística
 
-        public async Task<(int searchResult, int total)> ApplyFilterAsync(string name, int? region, int? gender, int? ethnicity, int? schooling)
+        public async Task<(int searchResult, int total)> ApplyFilterAsync(string name, NameComparisonEnum nameComparison, int? region, int? gender, int? ethnicity, int? schooling)
         {
             var total = await DatabaseContext.Answer.CountAsync();
 
             var predicate = PredicateBuilder.New<AnswerModel>(true);
 
             if (!string.IsNullOrWhiteSpace(name))
-                predicate = predicate.And(x => x.FirstName.ToLower().Contains(name.ToLower()) || x.LastName.ToLower().Contains(name.ToLower()));
+                switch (nameComparison)
+                {
+                    case NameComparisonEnum.StartWith:
+                        predicate = predicate.And(x => x.FirstName.ToLower().StartsWith(name.ToLower()) || x.LastName.ToLower().StartsWith(name.ToLower()));
+                        break;
+                    case NameComparisonEnum.EndsWith:
+                        predicate = predicate.And(x => x.FirstName.ToLower().EndsWith(name.ToLower()) || x.LastName.ToLower().EndsWith(name.ToLower()));
+                        break;
+                    case NameComparisonEnum.Equals:
+                        predicate = predicate.And(x => x.FirstName.ToLower().Equals(name.ToLower()) || x.LastName.ToLower().Equals(name.ToLower()));
+                        break;
+                    default:
+                        predicate = predicate.And(x => x.FirstName.ToLower().Contains(name.ToLower()) || x.LastName.ToLower().Contains(name.ToLower()));
+                        break;
+                }
             if (region.HasValue)
                 predicate = predicate.And(x => x.RegionId == region);
             if (gender.HasValue)

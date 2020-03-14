@@ -19,7 +19,7 @@
 
         public virtual EthnicityModel Ethnicity { get; set; }
 
-        public int GenderId { get; set; }
+        public int? GenderId { get; set; }
 
         public virtual GenderModel Gender { get; set; }
 

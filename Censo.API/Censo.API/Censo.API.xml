@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Censo.API</name>
+    </assembly>
+    <members>
+        <member name="M:Censo.API.Controllers.EthnicityController.Get(System.Int32)">
+            <summary>
+            Obtém a identificação de uma etnia dado seu código
+            </summary>
+            <param name="id">Código da etnia</param>
+            <returns>Objeto com identificação e descrição da etnia</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.EthnicityController.GetAll">
+            <summary>
+            Obtém todas as etnias disponíveis para responder o censo
+            </summary>
+            <returns>Lista com todas as etnias e respectivos códigos</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.EthnicityController.Post(Censo.Domain.Model.EthnicityModel)">
+            <summary>
+            Cadastra uma etnia nova
+            </summary>
+            <param name="value">Objeto com descrição da etnia</param>
+            <returns>Objeto com identificação e descrição da etnia</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.EthnicityController.Put(Censo.Domain.Model.EthnicityModel)">
+            <summary>
+            Atualiza a descrição de uma etnia
+            </summary>
+            <param name="value">Objeto com identificação e descrição da etnia</param>
+        </member>
+        <member name="M:Censo.API.Controllers.EthnicityController.Delete(System.Int32)">
+            <summary>
+             Apaga uma etnia
+            </summary>
+            <param name="id">Identificação da etnia</param>
+        </member>
+    </members>
+</doc>
