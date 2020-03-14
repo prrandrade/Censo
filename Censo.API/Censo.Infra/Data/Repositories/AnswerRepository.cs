@@ -6,8 +6,8 @@
     using System.Threading.Tasks;
     using Domain.Interfaces.Data;
     using Domain.Model;
+    using LinqKit;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.Win32.SafeHandles;
 
     public class AnswerRepository : RepositoryBase<AnswerModel>, IAnswerRepository
     {
@@ -35,7 +35,17 @@
             {
                 try
                 {
-                    await CreateAsync(model);
+                    // filling the remaining options, if this person is already recorded as a parent or child
+                    var oldModel = await GetByNameAsync(model.FirstName, model.LastName);
+                    if (oldModel == null)
+                    {
+                        await CreateAsync(model);
+                    }
+                    else
+                    {
+                        DatabaseContext.Entry(oldModel).CurrentValues.SetValues(model);
+                        await DatabaseContext.SaveChangesAsync();
+                    }
 
                     // saving parents
                     if (parents != null)
@@ -66,11 +76,67 @@
             }
         }
 
-        public async Task<AnswerModel> GetByNameAsync(string firstName, string lastName)
+        #region Queries para filtragem estatística
+
+        public async Task<(int searchResult, int total)> ApplyFilterAsync(string name, int? region, int? gender, int? ethnicity, int? schooling)
+        {
+            var total = await DatabaseContext.Answer.CountAsync();
+
+            var predicate = PredicateBuilder.New<AnswerModel>(true);
+
+            if (!string.IsNullOrWhiteSpace(name))
+                predicate = predicate.And(x => x.FirstName.ToLower().Contains(name.ToLower()) || x.LastName.ToLower().Contains(name.ToLower()));
+            if (region.HasValue)
+                predicate = predicate.And(x => x.RegionId == region);
+            if (gender.HasValue)
+                predicate = predicate.And(x => x.GenderId == gender);
+            if (ethnicity.HasValue)
+                predicate = predicate.And(x => x.EthnicityId == ethnicity);
+            if (schooling.HasValue)
+                predicate = predicate.And(x => x.SchoolingId == schooling);
+
+            var searchResult = await DatabaseContext.Answer.CountAsync(predicate);
+
+            return (searchResult, total);
+        }
+
+        public async Task<List<List<AnswerModel>>> ApplyGenealogyFilter(int id, int parentMaxLevel = 0)
+        {
+            // the first node in a genealogic tree is the passed target
+            var tree = new List<List<AnswerModel>> {new List<AnswerModel>()};
+            tree[0].Add(await GetAsync(id));
+
+            var childIds = new[]{id};
+            // now we will retrieve the parent levels
+            for (var i = 0; i < parentMaxLevel; i++)
+            {
+                var ids = await ApplyGenealogyGetParentsAsync(childIds);
+                if (ids.Any())
+                {
+                    tree.Add(DatabaseContext.Answer.Where(x => ids.Contains(x.Id)).ToList());
+                }
+                childIds = ids;
+            }
+
+            return tree;
+        }
+
+        #endregion
+
+        #region Auxiliary private methods
+
+        private async Task<AnswerModel> GetByNameAsync(string firstName, string lastName)
         {
             await Task.CompletedTask;
             return DatabaseContext.Answer
                 .FirstOrDefault(x => x.FirstName == firstName && x.LastName == lastName);
         }
+
+        private async Task<int[]> ApplyGenealogyGetParentsAsync(params int[]ids)
+        {
+            return await DatabaseContext.AnswerParentChild.Where(x => ids.ToList().Contains(x.ChildId)).Select(x => x.ParentId).ToArrayAsync();
+        }
+
+        #endregion
     }
 }

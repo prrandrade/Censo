@@ -58,6 +58,8 @@ namespace Censo.Infra.Migrations
                         .IsUnique()
                         .HasFilter("[FirstName] IS NOT NULL AND [LastName] IS NOT NULL");
 
+                    b.HasIndex("FirstName", "LastName", "GenderId", "RegionId", "EthnicityId", "SchoolingId");
+
                     b.ToTable("Census_Answers");
                 });
 

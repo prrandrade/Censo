@@ -2,7 +2,7 @@
 
 namespace Censo.Infra.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -196,6 +196,11 @@ namespace Censo.Infra.Migrations
                 columns: new[] { "FirstName", "LastName" },
                 unique: true,
                 filter: "[FirstName] IS NOT NULL AND [LastName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Census_Answers_FirstName_LastName_GenderId_RegionId_EthnicityId_SchoolingId",
+                table: "Census_Answers",
+                columns: new[] { "FirstName", "LastName", "GenderId", "RegionId", "EthnicityId", "SchoolingId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Census_AnswersParentChild_ChildId",

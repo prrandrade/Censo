@@ -1,8 +1,10 @@
 ﻿namespace Censo.API
 {
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Domain.Model;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using ViewModels;
 
     public static class Mapping
@@ -44,7 +46,7 @@
             });
         }
 
-        public static AnswerViewModel ToAnswerViewModel(this AnswerModel @this)
+        public static AnswerViewModel ToAnswerViewModel(this AnswerModel @this, bool withParentChildrenInfo = true)
         {
             var vm = new AnswerViewModel
             {
@@ -58,7 +60,11 @@
                     EthnicityCode = @this.EthnicityId,
                     RegionCode = @this.RegionId
                 },
-                ParentsInfo = @this.Parents?.Select(x => new AnswerInfoViewModel
+            };
+
+            if (withParentChildrenInfo)
+            {
+                vm.ParentsInfo = @this.Parents?.Select(x => new AnswerInfoViewModel
                 {
                     Id = x.Parent.Id,
                     FirstName = x.Parent.FirstName,
@@ -67,8 +73,8 @@
                     SchoolingCode = x.Parent.SchoolingId,
                     EthnicityCode = x.Parent.EthnicityId,
                     RegionCode = x.Parent.RegionId
-                }),
-                ChildrenInfo = @this.Children?.Select(x => new AnswerInfoViewModel
+                });
+                vm.ChildrenInfo = @this.Children?.Select(x => new AnswerInfoViewModel
                 {
                     Id = x.Child.Id,
                     FirstName = x.Child.FirstName,
@@ -77,15 +83,20 @@
                     SchoolingCode = x.Child.SchoolingId,
                     EthnicityCode = x.Child.EthnicityId,
                     RegionCode = x.Child.RegionId
-                })
-            };
+                });
+            }
 
             return vm;
         }
 
-        public static IEnumerable<AnswerViewModel> ToAnswerViewModel(this IEnumerable<AnswerModel> @this)
+        public static IEnumerable<AnswerViewModel> ToAnswerViewModel(this IEnumerable<AnswerModel> @this, bool withParentChildrenInfo = true)
         {
-            return @this.Select(x => x.ToAnswerViewModel());
+            return @this.Select(x => x.ToAnswerViewModel(withParentChildrenInfo));
+        }
+
+        public static IEnumerable<IEnumerable<AnswerViewModel>> ToAnswerViewModel(this IEnumerable<IEnumerable<AnswerModel>> @this, bool withParentChildrenInfo = true)
+        {
+            return @this.Select(x => x.ToAnswerViewModel(withParentChildrenInfo));
         }
     }
 }

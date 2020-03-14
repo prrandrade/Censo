@@ -6,8 +6,11 @@
 
     public interface IAnswerRepository : IRepository<AnswerModel>
     {
-        Task<AnswerModel> GetByNameAsync(string firstName, string lastName);
-
         Task<AnswerModel> CreateWithParentsAndChidrenAsync(AnswerModel model, IEnumerable<AnswerModel> parents, IEnumerable<AnswerModel> children);
+
+        Task<(int searchResult, int total)> ApplyFilterAsync(string name, int? region, int? gender, int? ethnicity, int? schooling);
+
+        Task<List<List<AnswerModel>>> ApplyGenealogyFilter(int id, int parentMaxLevel = 0);
+
     }
 }

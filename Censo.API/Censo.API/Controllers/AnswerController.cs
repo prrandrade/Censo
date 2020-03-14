@@ -37,7 +37,7 @@
             var children = value.RetrieveAnswerModelChildren();
 
             var result = await _repository.CreateWithParentsAndChidrenAsync(census, parents, children);
-            return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
+            return CreatedAtAction(nameof(Get), new {id = result.Id}, result.ToAnswerViewModel());
         }
     }
 }

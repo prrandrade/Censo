@@ -16,6 +16,8 @@
             builder.HasOne(c => c.Region).WithMany().HasForeignKey(c => c.RegionId);
             builder.HasOne(c => c.Ethnicity).WithMany().HasForeignKey(c => c.EthnicityId);
             builder.HasOne(c => c.Schooling).WithMany().HasForeignKey(c => c.SchoolingId);
+
+            builder.HasIndex(c => new {c.FirstName, c.LastName, c.GenderId, c.RegionId, c.EthnicityId, c.SchoolingId});
         }
     }
 }

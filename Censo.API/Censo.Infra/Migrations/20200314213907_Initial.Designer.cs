@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Censo.Infra.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200314004630_initial")]
-    partial class initial
+    [Migration("20200314213907_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,6 +59,8 @@ namespace Censo.Infra.Migrations
                     b.HasIndex("FirstName", "LastName")
                         .IsUnique()
                         .HasFilter("[FirstName] IS NOT NULL AND [LastName] IS NOT NULL");
+
+                    b.HasIndex("FirstName", "LastName", "GenderId", "RegionId", "EthnicityId", "SchoolingId");
 
                     b.ToTable("Census_Answers");
                 });
