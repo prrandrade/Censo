@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Domain.Interfaces.Data;
     using Domain.Model;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Win32.SafeHandles;
 
     public class AnswerRepository : RepositoryBase<AnswerModel>, IAnswerRepository
@@ -13,6 +14,19 @@
         public AnswerRepository(DatabaseContext databaseContext) : base(databaseContext)
         {
             
+        }
+
+        public override async Task<AnswerModel> GetAsync(int id)
+        {
+            await Task.CompletedTask;
+            var result = DatabaseContext
+                .Answer
+                .Include(x => x.Parents)
+                .ThenInclude(x => x.Parent)
+                .Include(x => x.Children)
+                .ThenInclude(x => x.Child).FirstOrDefault(x => x.Id == id);
+
+            return result;
         }
 
         public async Task<AnswerModel> CreateWithParentsAndChidrenAsync(AnswerModel model, IEnumerable<AnswerModel> parents, IEnumerable<AnswerModel> children)
@@ -51,7 +65,6 @@
                 }
             }
         }
-
 
         public async Task<AnswerModel> GetByNameAsync(string firstName, string lastName)
         {
