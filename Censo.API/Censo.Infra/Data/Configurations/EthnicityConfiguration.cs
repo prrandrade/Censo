@@ -8,6 +8,10 @@
     {
         public void Configure(EntityTypeBuilder<EthnicityModel> builder)
         {
+            builder.ToTable("Census_Ethnicity");
+            builder.HasKey(c =>c.Id);
+            builder.Property(c => c.Value).IsRequired();
+
             builder.HasData(
                 new EthnicityModel { Id = 1, Value = "Branco" },
                 new EthnicityModel { Id = 2, Value = "Pardo" },

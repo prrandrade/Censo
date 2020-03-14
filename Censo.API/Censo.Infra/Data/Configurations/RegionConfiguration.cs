@@ -8,6 +8,10 @@
     {
         public void Configure(EntityTypeBuilder<RegionModel> builder)
         {
+            builder.ToTable("Census_Region");
+            builder.HasKey(c =>c.Id);
+            builder.Property(c => c.Value).IsRequired();
+
             builder.HasData(
                 new RegionModel { Id = 1, Value = "Sudeste" },
                 new RegionModel { Id = 2, Value = "Sul" },

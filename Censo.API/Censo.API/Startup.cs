@@ -27,13 +27,15 @@ namespace Censo.API
             services.AddTransient<IMyEnvironment, MyEnvironment>();
             services.AddDbContext<DatabaseContext>();
 
-            services.AddControllers();
-
             // repositories
             services.AddTransient<IRegionRepository, RegionRepository>();
             services.AddTransient<IGenderRepository, GenderRepository>();
             services.AddTransient<ISchoolingRepository, SchoolingRepository>();
             services.AddTransient<IEthnicityRepository, EthnicityRepository>();
+            services.AddTransient<IAnswerRepository, AnswerRepository>();
+
+            // controllers
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

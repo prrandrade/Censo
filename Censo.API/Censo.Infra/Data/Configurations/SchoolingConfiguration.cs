@@ -8,6 +8,10 @@
     {
         public void Configure(EntityTypeBuilder<SchoolingModel> builder)
         {
+            builder.ToTable("Census_Schooling");
+            builder.HasKey(c =>c.Id);
+            builder.Property(c => c.Value).IsRequired();
+
             builder.HasData(
                 new SchoolingModel { Id = 1, Value = "Fundamental I Incompleto" },
                 new SchoolingModel { Id = 2, Value = "Fundamental I Completo" },
