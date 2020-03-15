@@ -31,19 +31,6 @@
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
             _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
             _address = "/api/census/answer";
-
-            // seeding the database
-            var ethModel = new EthnicityModel { Id = 1, Value = "eth" };
-            var genModel = new GenderModel { Id = 1, Value = "gen" };
-            var regModel = new RegionModel { Id = 1, Value = "reg" };
-            var schModel = new SchoolingModel { Id = 1, Value = "sch" };
-
-            _context.Ethnicities.Add(ethModel);
-            _context.Genders.Add(genModel);
-            _context.Regions.Add(regModel);
-            _context.Schoolings.Add(schModel);
-
-            _context.SaveChanges();
         }
 
         [Fact]

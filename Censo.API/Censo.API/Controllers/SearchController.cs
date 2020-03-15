@@ -21,7 +21,7 @@
         }
 
         [HttpGet]
-        public async Task<ActionResult<SearchResultViewModel>> Filter(string name, NameComparisonEnum namecomparison, int? region = null, int? gender = null, int? ethnicity = null, int? schooling = null)
+        public async Task<ActionResult<SearchResultViewModel>> Filter(string name, NameComparisonEnum? namecomparison, int? region = null, int? gender = null, int? ethnicity = null, int? schooling = null)
         {
             try
             {

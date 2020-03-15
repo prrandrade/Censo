@@ -77,7 +77,7 @@
 
         #region Queries for filtering
 
-        public async Task<(int searchResult, int total)> ApplyFilterAsync(string name, NameComparisonEnum nameComparison, int? region, int? gender, int? ethnicity, int? schooling)
+        public async Task<(int searchResult, int total)> ApplyFilterAsync(string name, NameComparisonEnum? nameComparison, int? region, int? gender, int? ethnicity, int? schooling)
         {
             var total = await DatabaseContext.Answer.CountAsync();
 
