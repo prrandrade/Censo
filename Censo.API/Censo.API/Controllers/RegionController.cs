@@ -24,6 +24,9 @@
         /// </summary>
         /// <param name="id">Código da região</param>
         /// <returns>Objeto com identificação e descrição da região</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="404">Informação não foi encontrada</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<RegionModel>> Get(int id)
         {
@@ -43,6 +46,8 @@
         /// Obtém todas as regiões disponíveis para responder o censo
         /// </summary>
         /// <returns>Lista com todas as regiões e respectivos códigos</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RegionModel>>> GetAll()
         {
@@ -61,6 +66,8 @@
         /// </summary>
         /// <param name="value">Objeto com descrição da região</param>
         /// <returns>Objeto com identificação e descrição da região</returns>
+        /// <response code="201">Informação persistida em banco corretamente</response>
+        /// <response code="500">Erro an salvar a informação</response>
         [HttpPost]
         public async Task<ActionResult<RegionModel>> Post([FromBody] RegionModel value)
         {
@@ -79,6 +86,8 @@
         /// Atualiza a descrição de uma região
         /// </summary>
         /// <param name="value">Objeto com identificação e descrição da região</param>
+        /// <response code="200">Informação atualizada com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpPut]
         public async Task<ActionResult> Put(RegionModel value)
         {

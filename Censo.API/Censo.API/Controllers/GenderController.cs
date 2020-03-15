@@ -24,6 +24,9 @@
         /// </summary>
         /// <param name="id">Código do gênero</param>
         /// <returns>Objeto com identificação e descrição do gênero</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="404">Informação não foi encontrada</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<GenderModel>> Get(int id)
         {
@@ -44,6 +47,9 @@
         /// Obtém todos os gêneros disponíveis para responder o censo
         /// </summary>
         /// <returns>Lista com todos os gêneros e respectivos códigos</returns>
+        /// <returns>Lista com todas as etnias e respectivos códigos</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GenderModel>>> GetAll()
         {
@@ -62,6 +68,8 @@
         /// </summary>
         /// <param name="value">Objeto com descrição do gênero</param>
         /// <returns>Objeto com identificação e descrição do gênero</returns>
+        /// <response code="201">Informação persistida em banco corretamente</response>
+        /// <response code="500">Erro an salvar a informação</response>
         [HttpPost]
         public async Task<ActionResult<RegionModel>> Post([FromBody] GenderModel value)
         {
@@ -80,6 +88,8 @@
         /// Atualiza a descrição de um gênero
         /// </summary>
         /// <param name="value">Objeto com identificação e descrição do gênero</param>
+        /// <response code="200">Informação atualizada com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpPut]
         public async Task<ActionResult> Put(GenderModel value)
         {

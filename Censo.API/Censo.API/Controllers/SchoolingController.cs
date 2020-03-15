@@ -24,6 +24,9 @@
         /// </summary>
         /// <param name="id">Código do grau de escolaridade</param>
         /// <returns>Objeto com identificação e descrição do grau de escolaridade</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="404">Informação não foi encontrada</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<SchoolingModel>> Get(int id)
         {
@@ -43,6 +46,8 @@
         /// Obtém todos os grau de escolaridade disponíveis para responder o censo
         /// </summary>
         /// <returns>Lista com todos os grau de escolaridade e respectivos códigos</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SchoolingModel>>> GetAll()
         {
@@ -61,6 +66,8 @@
         /// </summary>
         /// <param name="value">Objeto com descrição do grau de escolaridade</param>
         /// <returns>Objeto com identificação e descrição do grau de escolaridade</returns>
+        /// <response code="201">Informação persistida em banco corretamente</response>
+        /// <response code="500">Erro an salvar a informação</response>
         [HttpPost]
         public async Task<ActionResult<SchoolingModel>> Post([FromBody] SchoolingModel value)
         {
@@ -79,6 +86,8 @@
         /// Atualiza a descrição de um grau de escolaridade
         /// </summary>
         /// <param name="value">Objeto com identificação e descrição do grau de escolaridade</param>
+        /// <response code="200">Informação atualizada com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpPut]
         public async Task<ActionResult> Put(SchoolingModel value)
         {

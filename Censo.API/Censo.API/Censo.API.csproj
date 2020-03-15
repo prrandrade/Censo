@@ -9,6 +9,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>C:\dev\projetos\NETCore\Censo\Censo.API\Censo.API\Censo.API.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
+    <WarningLevel>2</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\dev\projetos\NETCore\Censo\Censo.API\Censo.API\Censo.API.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

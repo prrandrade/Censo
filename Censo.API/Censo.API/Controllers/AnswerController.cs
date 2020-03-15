@@ -24,6 +24,9 @@
         /// </summary>
         /// <param name="id">Identificação única da resposta</param>
         /// <returns>Objeto com dados da resposta</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="404">Informação não foi encontrada</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<AnswerViewModel>> Get(int id)
         {
@@ -39,6 +42,12 @@
             }
         }
 
+        /// <summary>
+        /// Obtém todas as respostas
+        /// </summary>
+        /// <returns>Lista de todas as respostas enviadas</returns>
+        /// <response code="200">Informação obtida com sucesso</response>
+        /// <response code="500">Erro an obter a informação</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AnswerViewModel>>> GetAll()
         {
@@ -52,6 +61,13 @@
             }
         }
 
+        /// <summary>
+        /// Envia uma nova resposta do censo
+        /// </summary>
+        /// <param name="value">Objeto com as respostas</param>
+        /// <returns>Resposta persistida em banco</returns>
+        /// <response code="201">Informação persistida em banco corretamente</response>
+        /// <response code="500">Erro an salvar a informação</response>
         [HttpPost]
         public async Task<ActionResult<AnswerViewModel>> Post([FromBody] AnswerViewModel value)
         {

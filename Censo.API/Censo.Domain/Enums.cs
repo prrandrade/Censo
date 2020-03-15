@@ -7,14 +7,4 @@
         EndsWith,
         Equals
     }
-
-    public enum KindInfoEnum
-    {
-        FirstName,
-        LastName,
-        Region,
-        Gender,
-        Ethnicity,
-        Schooling
-    }
 }
