@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Censo.Infra", "Censo.Infra\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Censo.Domain", "Censo.Domain\Censo.Domain.csproj", "{0A8563CE-BFCF-4259-B0E5-674043746F87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Censo.UnitTest", "Censo.UT\Censo.UnitTest.csproj", "{1B1DCBF6-F6CD-4C13-9E6F-0B0A95F1D762}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Censo.UnitTest", "Censo.UnitTest\Censo.UnitTest.csproj", "{1B1DCBF6-F6CD-4C13-9E6F-0B0A95F1D762}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{E4F1A33A-F77F-48EC-87BF-330CD9D14C53}"
 EndProject

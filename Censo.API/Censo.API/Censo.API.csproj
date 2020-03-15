@@ -27,5 +27,4 @@
     <ProjectReference Include="..\Censo.Infra\Censo.Infra.csproj" />
   </ItemGroup>
 
-
 </Project>

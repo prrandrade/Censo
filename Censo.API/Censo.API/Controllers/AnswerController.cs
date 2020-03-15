@@ -19,6 +19,11 @@
             _repository = repository;
         }
 
+        /// <summary>
+        /// Obtém uma resposta de censo
+        /// </summary>
+        /// <param name="id">Identificação única da resposta</param>
+        /// <returns>Objeto com dados da resposta</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<AnswerViewModel>> Get(int id)
         {

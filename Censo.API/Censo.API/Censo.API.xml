@@ -4,6 +4,13 @@
         <name>Censo.API</name>
     </assembly>
     <members>
+        <member name="M:Censo.API.Controllers.AnswerController.Get(System.Int32)">
+            <summary>
+            Obtém uma resposta de censo
+            </summary>
+            <param name="id">Identificação única da resposta</param>
+            <returns>Objeto com dados da resposta</returns>
+        </member>
         <member name="M:Censo.API.Controllers.EthnicityController.Get(System.Int32)">
             <summary>
             Obtém a identificação de uma etnia dado seu código

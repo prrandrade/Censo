@@ -21,7 +21,7 @@
     "Censo.API": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "region",
       "environmentVariables": {
         "SQL_SERVER_PASSWORD": "Root@123",
         "SQL_SERVER_USER": "sa",
@@ -34,13 +34,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/",
-      "environmentVariables": {
-        "SQL_SERVER_PASSWORD": "Root@123",
-        "SQL_SERVER_USER": "sa",
-        "SQL_SERVER_DATABASE": "Census",
-        "SQL_SERVER_HOST": "localhost"
-      },
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
       "publishAllPorts": true,
       "useSSL": true
     }

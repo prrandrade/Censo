@@ -2,12 +2,12 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Censo.API/Censo.API.csproj", "Censo.API/"]
+COPY ["Censo.Domain/Censo.Domain.csproj", "Censo.API/"]
+COPY ["Censo.Infra/Censo.Infra.csproj", "Censo.API/"]
 RUN dotnet restore "Censo.API/Censo.API.csproj"
 COPY . .
 WORKDIR "/src/Censo.API"
@@ -17,10 +17,7 @@ FROM build AS publish
 RUN dotnet publish "Censo.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
+EXPOSE 4321
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV SQL_SERVER_HOST localhost
-ENV SQL_SERVER_DATABASE census
-ENV SQL_SERVER_USER sa
-ENV SQL_SERVER_PASSWORD Root@123
 ENTRYPOINT ["dotnet", "Censo.API.dll"]

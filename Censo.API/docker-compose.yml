@@ -1,0 +1,23 @@
+version: '3'
+services:  
+  sql:
+    image: "mcr.microsoft.com/mssql/server:latest"
+    ports:
+      - "1433:1433"      
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Root@123
+  web:    
+    build: .
+    depends_on:
+      - sql
+    ports:
+      - "8080:4321"      
+    environment:
+      - ASPNETCORE_URLS=http://+:4321
+      - SQL_SERVER_HOST=localhost
+      - SQL_SERVER_DATABASE=census
+      - SQL_SERVER_USER=sa
+      - SQL_SERVER_PASSWORD=Root@123
+      
+        
