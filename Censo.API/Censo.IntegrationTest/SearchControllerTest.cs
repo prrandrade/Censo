@@ -1,9 +1,5 @@
 ﻿namespace Censo.IntegrationTest
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
     using API;
     using API.ViewModels;
     using Domain;
@@ -12,6 +8,10 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.TestHost;
     using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Threading.Tasks;
     using Xunit;
 
     [Collection("Endpoints")]
@@ -128,6 +128,8 @@
         [InlineData("i", NameComparisonEnum.EndsWith, null, null, null, null, 4, 15)] // every name/lastname that ends with 'i'
         [InlineData(null, null, null, null, null, null, 15, 15)] // everyone
         [InlineData(null, null, 1, 1, 1, 1, 1, 15)] // everyone with region 1, gender 1, ethnicity 1 and schooling 1
+        [InlineData("João", NameComparisonEnum.Equals, null, null, null, null, 5, 15)] // every name/lastname that is equals to 'joão'
+        [InlineData("o", null, null, 2, null, null, 5, 15)] // every name/lastname that contains 'o' and gender 2
         public async Task Filter(string name, NameComparisonEnum? nameComparison, int? region, int? gender, int? ethnicity, int? schooling, int expectedFraction, int expectedTotal)
         {
             // arrange
@@ -153,24 +155,23 @@
             Assert.Equal(expectedTotal, result.Total);
         }
 
-
         private async Task SeedFilter()
         {
-            _context.Answer.Add(new AnswerModel {FirstName = "João", LastName = "Silva", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 1});
-            _context.Answer.Add(new AnswerModel {FirstName = "José", LastName = "Leite", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 2});
-            _context.Answer.Add(new AnswerModel {FirstName = "Mara", LastName = "Sousa", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 3});
-            _context.Answer.Add(new AnswerModel {FirstName = "João", LastName = "Lopez", RegionId = 1, EthnicityId = 2, GenderId = 2, SchoolingId = 4});
-            _context.Answer.Add(new AnswerModel {FirstName = "Yara", LastName = "Sousa", RegionId = 2, EthnicityId = 1, GenderId = 1, SchoolingId = 5});
-            _context.Answer.Add(new AnswerModel {FirstName = "Yuri", LastName = "Silva", RegionId = 3, EthnicityId = 2, GenderId = 2, SchoolingId = 1});
-            _context.Answer.Add(new AnswerModel {FirstName = "João", LastName = "Leite", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 2});
-            _context.Answer.Add(new AnswerModel {FirstName = "Ceci", LastName = "Silva", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 3});
-            _context.Answer.Add(new AnswerModel {FirstName = "José", LastName = "Silva", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 4});
-            _context.Answer.Add(new AnswerModel {FirstName = "Ceci", LastName = "Sousa", RegionId = 1, EthnicityId = 2, GenderId = 2, SchoolingId = 5});
-            _context.Answer.Add(new AnswerModel {FirstName = "João", LastName = "Sousa", RegionId = 2, EthnicityId = 1, GenderId = 1, SchoolingId = 1});
-            _context.Answer.Add(new AnswerModel {FirstName = "João", LastName = "Leite", RegionId = 3, EthnicityId = 2, GenderId = 2, SchoolingId = 2});
-            _context.Answer.Add(new AnswerModel {FirstName = "Mara", LastName = "Sousa", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 3});
-            _context.Answer.Add(new AnswerModel {FirstName = "Yuri", LastName = "Lopez", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 4});
-            _context.Answer.Add(new AnswerModel {FirstName = "Yara", LastName = "Lopez", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 5});
+            _context.Answer.Add(new AnswerModel { FirstName = "João", LastName = "Silva", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 1 });
+            _context.Answer.Add(new AnswerModel { FirstName = "José", LastName = "Leite", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 2 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Mara", LastName = "Sousa", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 3 });
+            _context.Answer.Add(new AnswerModel { FirstName = "João", LastName = "Lopez", RegionId = 1, EthnicityId = 2, GenderId = 2, SchoolingId = 4 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Yara", LastName = "Sousa", RegionId = 2, EthnicityId = 1, GenderId = 1, SchoolingId = 5 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Yuri", LastName = "Silva", RegionId = 3, EthnicityId = 2, GenderId = 2, SchoolingId = 1 });
+            _context.Answer.Add(new AnswerModel { FirstName = "João", LastName = "Leite", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 2 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Ceci", LastName = "Silva", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 3 });
+            _context.Answer.Add(new AnswerModel { FirstName = "José", LastName = "Silva", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 4 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Ceci", LastName = "Sousa", RegionId = 1, EthnicityId = 2, GenderId = 2, SchoolingId = 5 });
+            _context.Answer.Add(new AnswerModel { FirstName = "João", LastName = "Sousa", RegionId = 2, EthnicityId = 1, GenderId = 1, SchoolingId = 1 });
+            _context.Answer.Add(new AnswerModel { FirstName = "João", LastName = "Leite", RegionId = 3, EthnicityId = 2, GenderId = 2, SchoolingId = 2 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Mara", LastName = "Sousa", RegionId = 1, EthnicityId = 1, GenderId = 1, SchoolingId = 3 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Yuri", LastName = "Lopez", RegionId = 2, EthnicityId = 2, GenderId = 2, SchoolingId = 4 });
+            _context.Answer.Add(new AnswerModel { FirstName = "Yara", LastName = "Lopez", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 5 });
 
             await _context.SaveChangesAsync();
         }
