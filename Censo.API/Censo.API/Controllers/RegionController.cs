@@ -23,9 +23,11 @@
         /// <param name="id">Código da região</param>
         /// <returns>Objeto com identificação e descrição da região</returns>
         [HttpGet("{id}")]
-        public async Task<RegionModel> Get(int id)
+        public async Task<ActionResult<RegionModel>> Get(int id)
         {
-            return await _repository.GetAsync(id);
+            var result = await _repository.GetAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         /// <summary>

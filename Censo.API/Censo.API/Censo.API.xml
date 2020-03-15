@@ -30,11 +30,83 @@
             </summary>
             <param name="value">Objeto com identificação e descrição da etnia</param>
         </member>
-        <member name="M:Censo.API.Controllers.EthnicityController.Delete(System.Int32)">
+        <member name="M:Censo.API.Controllers.GenderController.Get(System.Int32)">
             <summary>
-             Apaga uma etnia
+            Obtém a identificação de um gênero dado seu código
             </summary>
-            <param name="id">Identificação da etnia</param>
+            <param name="id">Código do gênero</param>
+            <returns>Objeto com identificação e descrição do gênero</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.GenderController.GetAll">
+            <summary>
+            Obtém todos os gêneros disponíveis para responder o censo
+            </summary>
+            <returns>Lista com todos os gêneros e respectivos códigos</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.GenderController.Post(Censo.Domain.Model.GenderModel)">
+            <summary>
+            Cadastra um gênero novo
+            </summary>
+            <param name="value">Objeto com descrição do gênero</param>
+            <returns>Objeto com identificação e descrição do gênero</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.GenderController.Put(Censo.Domain.Model.GenderModel)">
+            <summary>
+            Atualiza a descrição de um gênero
+            </summary>
+            <param name="value">Objeto com identificação e descrição do gênero</param>
+        </member>
+        <member name="M:Censo.API.Controllers.RegionController.Get(System.Int32)">
+            <summary>
+            Obtém a identificação de uma região dado seu código
+            </summary>
+            <param name="id">Código da região</param>
+            <returns>Objeto com identificação e descrição da região</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.RegionController.GetAll">
+            <summary>
+            Obtém todas as regiões disponíveis para responder o censo
+            </summary>
+            <returns>Lista com todas as regiões e respectivos códigos</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.RegionController.Post(Censo.Domain.Model.RegionModel)">
+            <summary>
+            Cadastra uma região nova
+            </summary>
+            <param name="value">Objeto com descrição da região</param>
+            <returns>Objeto com identificação e descrição da região</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.RegionController.Put(Censo.Domain.Model.RegionModel)">
+            <summary>
+            Atualiza a descrição de uma região
+            </summary>
+            <param name="value">Objeto com identificação e descrição da região</param>
+        </member>
+        <member name="M:Censo.API.Controllers.SchoolingController.Get(System.Int32)">
+            <summary>
+            Obtém a identificação de um grau de escolaridade dado seu código
+            </summary>
+            <param name="id">Código do grau de escolaridade</param>
+            <returns>Objeto com identificação e descrição do grau de escolaridade</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.SchoolingController.GetAll">
+            <summary>
+            Obtém todos os grau de escolaridade disponíveis para responder o censo
+            </summary>
+            <returns>Lista com todos os grau de escolaridade e respectivos códigos</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.SchoolingController.Post(Censo.Domain.Model.SchoolingModel)">
+            <summary>
+            Cadastra uma etnia nova
+            </summary>
+            <param name="value">Objeto com descrição do grau de escolaridade</param>
+            <returns>Objeto com identificação e descrição do grau de escolaridade</returns>
+        </member>
+        <member name="M:Censo.API.Controllers.SchoolingController.Put(Censo.Domain.Model.SchoolingModel)">
+            <summary>
+            Atualiza a descrição de um grau de escolaridade
+            </summary>
+            <param name="value">Objeto com identificação e descrição do grau de escolaridade</param>
         </member>
     </members>
 </doc>

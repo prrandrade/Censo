@@ -23,9 +23,11 @@
         /// <param name="id">Código do grau de escolaridade</param>
         /// <returns>Objeto com identificação e descrição do grau de escolaridade</returns>
         [HttpGet("{id}")]
-        public async Task<SchoolingModel> Get(int id)
+        public async Task<ActionResult<SchoolingModel>> Get(int id)
         {
-            return await _repository.GetAsync(id);
+            var result = await _repository.GetAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         /// <summary>

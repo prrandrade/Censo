@@ -1,10 +1,8 @@
 ﻿namespace Censo.API
 {
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Domain.Model;
-    using Microsoft.AspNetCore.Mvc.Infrastructure;
     using ViewModels;
 
     public static class Mapping

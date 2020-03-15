@@ -36,6 +36,5 @@
             var result = await _repository.ApplyGenealogyFilter(id, parentLevel);
             return Ok(result.ToAnswerViewModel(false));
         }
-
     }
 }

@@ -12,7 +12,5 @@
         Task<T> CreateAsync(T t);
 
         Task UpdateAsync(T t);
-
-        Task<bool> DeleteAsync(int id);
     }
 }

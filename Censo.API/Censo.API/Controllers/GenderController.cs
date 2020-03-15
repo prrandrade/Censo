@@ -23,9 +23,11 @@
         /// <param name="id">Código do gênero</param>
         /// <returns>Objeto com identificação e descrição do gênero</returns>
         [HttpGet("{id}")]
-        public async Task<GenderModel> Get(int id)
+        public async Task<ActionResult<GenderModel>> Get(int id)
         {
-            return await _repository.GetAsync(id);
+            var result = await _repository.GetAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
 
         /// <summary>

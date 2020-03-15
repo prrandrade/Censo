@@ -21,15 +21,6 @@
             return newInfo.Entity;
         }
 
-        public virtual async Task<bool> DeleteAsync(int id)
-        {
-            var info = await GetAsync(id);
-            if (info == null) return false;
-            DatabaseContext.Set<T>().Remove(info);
-            await DatabaseContext.SaveChangesAsync();
-            return true;
-        }
-
         public virtual async Task<T> GetAsync(int id)
         {
             await Task.CompletedTask;
