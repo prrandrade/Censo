@@ -1,32 +1,34 @@
-﻿namespace Censo.UT.API.Controllers
+﻿namespace Censo.UnitTest.API.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Censo.API.Controllers;
+    using Censo.API.ViewModels;
     using Domain.Interfaces.Data;
     using Domain.Model;
+    using Microsoft.AspNetCore.Components.RenderTree;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Moq;
     using Xunit;
 
-    public class SchoolingControllerTest
+    public class AnswerControllerTest
     {
-        private readonly Mock<ISchoolingRepository> _repository;
-        private readonly SchoolingController _controller;
+        private readonly Mock<IAnswerRepository> _repository;
+        private readonly AnswerController _controller;
 
-        public SchoolingControllerTest()
+        public AnswerControllerTest()
         {
-            _repository = new Mock<ISchoolingRepository>();
-            _controller = new SchoolingController(_repository.Object);
+            _repository = new Mock<IAnswerRepository>();
+            _controller = new AnswerController(_repository.Object);
         }
 
         [Fact]
         public async Task Get()
         {
             // arrange
-            var model = new SchoolingModel();
+            var model = new AnswerModel();
             _repository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult(model));
 
             // act
@@ -35,7 +37,7 @@
             // assert
             _repository.Verify(x => x.GetAsync(1), Times.Once);
             Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Same(model, (result.Result as OkObjectResult).Value);
+            Assert.IsType<AnswerViewModel>((result.Result as OkObjectResult).Value);
         }
 
         [Fact]
@@ -57,8 +59,8 @@
         public async Task Get_NotFound()
         {
             // arrange
-            var model = new SchoolingModel();
-            _repository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult((SchoolingModel)null));
+            var model = new AnswerModel();
+            _repository.Setup(x => x.GetAsync(It.IsAny<int>())).Returns(Task.FromResult((AnswerModel)null));
 
             // act
             var result = await _controller.Get(1);
@@ -72,8 +74,8 @@
         public async Task GetAll()
         {
             // arrange
-            var model = new List<SchoolingModel>() { new SchoolingModel(), new SchoolingModel() };
-            _repository.Setup(x => x.GetAllAsync()).Returns(Task.FromResult<IEnumerable<SchoolingModel>>(model));
+            var model = new List<AnswerModel>() { new AnswerModel(), new AnswerModel() };
+            _repository.Setup(x => x.GetAllAsync()).Returns(Task.FromResult<IEnumerable<AnswerModel>>(model));
 
             // act
             var result = await _controller.GetAll();
@@ -81,7 +83,7 @@
             // assert
             _repository.Verify(x => x.GetAllAsync(), Times.Once);
             Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Same(model, (result.Result as OkObjectResult).Value);
+            Assert.IsAssignableFrom<IEnumerable<AnswerViewModel>>((result.Result as OkObjectResult).Value);
         }
 
         [Fact]
@@ -103,60 +105,30 @@
         public async Task Post()
         {
             // arrange
-            var model = new SchoolingModel { Id = 1 };
-            _repository.Setup(x => x.CreateAsync(It.IsAny<SchoolingModel>())).Returns(Task.FromResult(model));
+            var vm = new AnswerViewModel { Info = new AnswerInfoViewModel()};
+            _repository.Setup(x => x.CreateWithParentsAndChidrenAsync(It.IsAny<AnswerModel>(), It.IsAny<IEnumerable<AnswerModel>>(), It.IsAny<IEnumerable<AnswerModel>>())).Returns(Task.FromResult(new AnswerModel()));
 
             // act
-            var result = await _controller.Post(model);
+            var result = await _controller.Post(vm);
 
             // assert
-            _repository.Verify(x => x.CreateAsync(model), Times.Once);
-            Assert.Same(model, (result.Result as CreatedAtActionResult).Value);
+            _repository.Verify(x => x.CreateWithParentsAndChidrenAsync(It.IsAny<AnswerModel>(), null, null), Times.Once);
+            Assert.IsType<AnswerViewModel>((result.Result as CreatedAtActionResult).Value);
         }
 
         [Fact]
         public async Task Post_InternalError()
         {
             // arrange
-            _repository.Setup(x => x.CreateAsync(It.IsAny<SchoolingModel>())).Throws(new Exception("teste"));
+            _repository.Setup(x => x.CreateWithParentsAndChidrenAsync(It.IsAny<AnswerModel>(), It.IsAny<IEnumerable<AnswerModel>>(), It.IsAny<IEnumerable<AnswerModel>>())).Throws(new Exception("teste"));
 
             // act
-            var result = await _controller.Post(new SchoolingModel());
+            var result = await _controller.Post(new AnswerViewModel{Info = new AnswerInfoViewModel()});
 
             // assert
             Assert.IsType<ObjectResult>(result.Result);
             Assert.Equal(StatusCodes.Status500InternalServerError, (result.Result as ObjectResult).StatusCode);
             Assert.Equal("teste", (result.Result as ObjectResult).Value);
-        }
-
-        [Fact]
-        public async Task Put()
-        {
-            // arrange
-            var model = new SchoolingModel();
-            _repository.Setup(x => x.UpdateAsync(It.IsAny<SchoolingModel>())).Returns(Task.FromResult(model));
-
-            // act
-            var result = await _controller.Put(model);
-
-            // assert
-            _repository.Verify(x => x.UpdateAsync(model), Times.Once);
-            Assert.IsType<OkResult>(result);
-        }
-
-        [Fact]
-        public async Task Put_InternalError()
-        {
-            // arrange
-            _repository.Setup(x => x.UpdateAsync(It.IsAny<SchoolingModel>())).Throws(new Exception("teste"));
-
-            // act
-            var result = await _controller.Put(new SchoolingModel());
-
-            // assert
-            Assert.IsType<ObjectResult>(result);
-            Assert.Equal(StatusCodes.Status500InternalServerError, (result as ObjectResult).StatusCode);
-            Assert.Equal("teste", (result as ObjectResult).Value);
         }
     }
 }

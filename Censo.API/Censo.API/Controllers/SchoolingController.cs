@@ -1,9 +1,11 @@
 ﻿namespace Censo.API.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain.Interfaces.Data;
     using Domain.Model;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -25,9 +27,16 @@
         [HttpGet("{id}")]
         public async Task<ActionResult<SchoolingModel>> Get(int id)
         {
-            var result = await _repository.GetAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
+            try
+            {
+                var result = await _repository.GetAsync(id);
+                if (result == null) return NotFound();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         /// <summary>
@@ -35,9 +44,16 @@
         /// </summary>
         /// <returns>Lista com todos os grau de escolaridade e respectivos códigos</returns>
         [HttpGet]
-        public async Task<IEnumerable<SchoolingModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<SchoolingModel>>> GetAll()
         {
-            return await _repository.GetAllAsync();
+            try
+            {
+                return Ok(await _repository.GetAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         /// <summary>
@@ -48,8 +64,15 @@
         [HttpPost]
         public async Task<ActionResult<SchoolingModel>> Post([FromBody] SchoolingModel value)
         {
-            var result = await _repository.CreateAsync(value);
-            return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
+            try
+            {
+                var result = await _repository.CreateAsync(value);
+                return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         /// <summary>
@@ -59,8 +82,15 @@
         [HttpPut]
         public async Task<ActionResult> Put(SchoolingModel value)
         {
-            await _repository.UpdateAsync(value);
-            return Ok();
+            try
+            {
+                await _repository.UpdateAsync(value);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

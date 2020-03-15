@@ -3,13 +3,12 @@ namespace Censo.API
     using System;
     using System.IO;
     using System.Reflection;
-    using Domain.Interfaces;
     using Domain.Interfaces.Data;
     using Infra.Data;
     using Infra.Data.Repositories;
-    using Infra.Environment;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -17,19 +16,37 @@ namespace Censo.API
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+
+        public IHostEnvironment CurrentEnvironment { get; }
+
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             Configuration = configuration;
+            CurrentEnvironment = environment;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // infra services
-            services.AddTransient<IMyEnvironment, MyEnvironment>();
-            services.AddDbContext<DatabaseContext>();
+
+            if (CurrentEnvironment.IsEnvironment("IntegrationTest"))
+            {
+                services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase("IntegrationTest"));
+            }
+            else
+            {
+                services.AddDbContext<DatabaseContext>(options =>
+                {
+                    var datasource = Environment.GetEnvironmentVariable("SQL_SERVER_HOST");
+                    var database = Environment.GetEnvironmentVariable("SQL_SERVER_DATABASE");
+                    var user = Environment.GetEnvironmentVariable("SQL_SERVER_USER");
+                    var password = Environment.GetEnvironmentVariable("SQL_SERVER_PASSWORD");
+
+                    options.UseSqlServer($"Data Source={datasource};Initial Catalog={database};Persist Security Info=True;User ID={user};Password={password}");
+                });
+            }
 
             // repositories
             services.AddTransient<IRegionRepository, RegionRepository>();

@@ -7,41 +7,36 @@
 
     public static class Mapping
     {
+        public static AnswerModel ToAnswerModel(this AnswerInfoViewModel @this)
+        {
+            return new AnswerModel
+            {
+                FirstName = @this.FirstName,
+                LastName = @this.LastName,
+                RegionId = @this.RegionCode,
+                GenderId = @this.GenderCode,
+                SchoolingId = @this.SchoolingCode,
+                EthnicityId = @this.EthnicityCode
+            };
+        }
+
         public static AnswerModel ToAnswerModel(this AnswerViewModel @this)
         {
             // filling the basic info about this person
-            var census = new AnswerModel
-            {
-                FirstName = @this.Info.FirstName,
-                LastName = @this.Info.LastName,
-                RegionId = @this.Info.RegionCode,
-                GenderId = @this.Info.GenderCode,
-                SchoolingId = @this.Info.SchoolingCode,
-                EthnicityId = @this.Info.EthnicityCode,
-                Parents = new List<AnswerParentChildModel>(),
-                Children = new List<AnswerParentChildModel>()
-            };
+            var census = @this.Info.ToAnswerModel();
+            census.Parents = new List<AnswerParentChildModel>();
+            census.Children = new List<AnswerParentChildModel>();
             return census;
         }
 
         public static IEnumerable<AnswerModel> RetrieveAnswerModelParents(this AnswerViewModel @this)
         {
-            return @this.ParentsInfo?.Select(x => new AnswerModel
-            {
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                GenderId = x.GenderCode
-            });
+            return @this.ParentsInfo?.Select(x => x.ToAnswerModel());
         }
 
         public static IEnumerable<AnswerModel> RetrieveAnswerModelChildren(this AnswerViewModel @this)
         {
-            return @this.ChildrenInfo?.Select(x => new AnswerModel
-            {
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                GenderId = x.GenderCode
-            });
+            return @this.ChildrenInfo?.Select(x => x.ToAnswerModel());
         }
 
         public static AnswerViewModel ToAnswerViewModel(this AnswerModel @this, bool withParentChildrenInfo = true)
@@ -92,9 +87,9 @@
             return @this.Select(x => x.ToAnswerViewModel(withParentChildrenInfo));
         }
 
-        public static IEnumerable<IEnumerable<AnswerViewModel>> ToAnswerViewModel(this IEnumerable<IEnumerable<AnswerModel>> @this, bool withParentChildrenInfo = true)
+        public static IEnumerable<IEnumerable<AnswerViewModel>> ToAnswerViewModel(this IEnumerable<IEnumerable<AnswerModel>> @this)
         {
-            return @this.Select(x => x.ToAnswerViewModel(withParentChildrenInfo));
+            return @this.Select(x => x.ToAnswerViewModel(false));
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿namespace Censo.API.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Domain.Interfaces.Data;
     using Domain.Model;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
@@ -25,9 +27,17 @@
         [HttpGet("{id}")]
         public async Task<ActionResult<GenderModel>> Get(int id)
         {
-            var result = await _repository.GetAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
+            try
+            {
+                var result = await _repository.GetAsync(id);
+                if (result == null) return NotFound();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
         }
 
         /// <summary>
@@ -35,9 +45,16 @@
         /// </summary>
         /// <returns>Lista com todos os gêneros e respectivos códigos</returns>
         [HttpGet]
-        public async Task<IEnumerable<GenderModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<GenderModel>>> GetAll()
         {
-            return await _repository.GetAllAsync();
+            try
+            {
+                return Ok(await _repository.GetAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         /// <summary>
@@ -48,8 +65,15 @@
         [HttpPost]
         public async Task<ActionResult<RegionModel>> Post([FromBody] GenderModel value)
         {
-            var result = await _repository.CreateAsync(value);
-            return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
+            try
+            {
+                var result = await _repository.CreateAsync(value);
+                return CreatedAtAction(nameof(Get), new {id = result.Id}, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         /// <summary>
@@ -59,8 +83,15 @@
         [HttpPut]
         public async Task<ActionResult> Put(GenderModel value)
         {
-            await _repository.UpdateAsync(value);
-            return Ok();
+            try
+            {
+                await _repository.UpdateAsync(value);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }
