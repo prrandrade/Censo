@@ -1,11 +1,10 @@
-﻿namespace Censo.UT.API
+﻿namespace Censo.UnitTest.API
 {
     using System.Collections.Generic;
     using System.Linq;
     using Censo.API;
     using Censo.API.ViewModels;
     using Domain.Model;
-    using Microsoft.CodeAnalysis;
     using Xunit;
 
     public class MappingTest

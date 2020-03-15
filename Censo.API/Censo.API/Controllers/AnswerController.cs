@@ -39,7 +39,7 @@
         {
             try
             {
-                return Ok((await _repository.GetAllAsync()).ToAnswerViewModel());
+                return Ok((await _repository.GetAllAsync()).ToAnswerViewModel(false));
             }
             catch (Exception ex)
             {

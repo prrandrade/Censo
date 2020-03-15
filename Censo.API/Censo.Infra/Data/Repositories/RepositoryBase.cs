@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Domain.Interfaces;
+    using Microsoft.EntityFrameworkCore;
 
     public abstract class RepositoryBase<T> : IRepository<T> where T : class, IModel
     {
@@ -35,8 +36,7 @@
 
         public virtual async Task UpdateAsync(T t)
         {
-            var old = DatabaseContext.Set<T>().Find(t.Id);
-            DatabaseContext.Entry(old).CurrentValues.SetValues(t);
+            DatabaseContext.Entry(await DatabaseContext.Set<T>().FirstOrDefaultAsync(x => x.Id == t.Id)).CurrentValues.SetValues(t);
             await DatabaseContext.SaveChangesAsync();
         }
     }

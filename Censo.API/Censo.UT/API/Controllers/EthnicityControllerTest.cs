@@ -1,4 +1,4 @@
-﻿namespace Censo.UT.API.Controllers
+﻿namespace Censo.UnitTest.API.Controllers
 {
     using System;
     using System.Collections.Generic;

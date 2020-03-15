@@ -15,13 +15,13 @@
     using Xunit;
 
     [Collection("Endpoints")]
-    public class RegionControllerTest
+    public class EthnicityControllerTest
     {
         private readonly HttpClient _client;
         private readonly DatabaseContext _context;
         private readonly string _address;
 
-        public RegionControllerTest()
+        public EthnicityControllerTest()
         {
             var server = new TestServer(new WebHostBuilder()
                 .UseEnvironment("IntegrationTest")
@@ -30,14 +30,15 @@
             _client = server.CreateClient();
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
             _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
-            _address = "/api/census/region";
+            _address = "/api/census/ethnicity";
         }
 
         [Fact]
         public async Task Get()
         {
-            var model = new RegionModel {Id = 1, Value = "Teste"};
-            _context.Regions.Add(model);
+            // arrange
+            var model = new EthnicityModel {Id = 1, Value = "Teste"};
+            _context.Ethnicities.Add(model);
             await _context.SaveChangesAsync();
 
             // act
@@ -45,7 +46,7 @@
 
             // assert
             response.EnsureSuccessStatusCode();
-            var result = JsonConvert.DeserializeObject<RegionModel>(await response.Content.ReadAsStringAsync());
+            var result = JsonConvert.DeserializeObject<EthnicityModel>(await response.Content.ReadAsStringAsync());
             Assert.Equal(model.Id, result.Id);
             Assert.Equal(model.Value, result.Value);
         }
@@ -53,13 +54,14 @@
         [Fact]
         public async Task GetAll()
         {
-            var model = new List<RegionModel>
+            // arrange
+            var model = new List<EthnicityModel>
             {
-                new RegionModel {Id = 1, Value = "Teste"},
-                new RegionModel {Id = 2, Value = "Outro teste"},
-                new RegionModel {Id = 3, Value = "Mais um teste"}
+                new EthnicityModel {Id = 1, Value = "Teste"},
+                new EthnicityModel {Id = 2, Value = "Outro teste"},
+                new EthnicityModel {Id = 3, Value = "Mais um teste"}
             };
-            _context.Regions.AddRange(model);
+            _context.Ethnicities.AddRange(model);
             await _context.SaveChangesAsync();
 
             // act
@@ -67,7 +69,7 @@
 
             // assert
             response.EnsureSuccessStatusCode();
-            var result = JsonConvert.DeserializeObject<List<RegionModel>>(await response.Content.ReadAsStringAsync()).OrderBy(x => x.Id).ToList();
+            var result = JsonConvert.DeserializeObject<List<EthnicityModel>>(await response.Content.ReadAsStringAsync()).OrderBy(x => x.Id).ToList();
 
             Assert.Equal(model.Count, result.Count);
             Assert.Equal(model[0].Id, result[0].Id);
@@ -78,14 +80,16 @@
         [Fact]
         public async Task Post()
         {
-            var model = new RegionModel { Value = "teste" };
+            // arrange
+            var model = new EthnicityModel { Value = "teste" };
 
             // act
             var response = await _client.PostAsync(_address, new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json"));
 
             // assert
             response.EnsureSuccessStatusCode();
-            var result = JsonConvert.DeserializeObject<RegionModel>(await response.Content.ReadAsStringAsync());
+            var result = JsonConvert.DeserializeObject<EthnicityModel>(await response.Content.ReadAsStringAsync());
+
             Assert.Equal(model.Value, result.Value);
             Assert.Equal(1, result.Id);
         }
@@ -93,9 +97,10 @@
         [Fact]
         public async Task Put()
         {
-            var model = new RegionModel {Id = 4, Value = "Teste 4"};
-            var newModel = new RegionModel {Id = 4, Value = "Novo Teste 4"};
-            _context.Regions.Add(model);
+            // arrange
+            var model = new EthnicityModel {Id = 4, Value = "Teste 4"};
+            var newModel = new EthnicityModel {Id = 4, Value = "Novo Teste 4"};
+            _context.Ethnicities.Add(model);
             await _context.SaveChangesAsync();
 
             // act
