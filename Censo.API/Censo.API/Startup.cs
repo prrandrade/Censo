@@ -32,7 +32,7 @@ namespace Censo.API
         public void ConfigureServices(IServiceCollection services)
         {
             // infra services
-            if (CurrentEnvironment.IsEnvironment("IntegrationTest"))
+            if (CurrentEnvironment.IsEnvironment("Test"))
             {
                 services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase("database").ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
             }
@@ -96,11 +96,14 @@ namespace Censo.API
                 endpoints.MapControllers();
             });
 
-
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            
+            if (Environment.GetCommandLineArgs().Contains("--migrate"))
             {
-                var context = serviceScope.ServiceProvider.GetService<DatabaseContext>();
-                context.Database.Migrate();
+                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetService<DatabaseContext>();
+                    context.Database.Migrate();
+                }
             }
         }
     }

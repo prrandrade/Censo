@@ -24,7 +24,7 @@
         public RegionControllerTest()
         {
             var server = new TestServer(new WebHostBuilder()
-                .UseEnvironment("IntegrationTest")
+                .UseEnvironment("Test")
                 .UseStartup<Startup>());
 
             _client = server.CreateClient();
