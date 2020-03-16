@@ -6,10 +6,10 @@
        - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
     
      steps:
-        - checkout
-        - run: 
-            name: Restore packages
-            command: dotnet restore Censo.API/Censo.API.sln
-        - run:
-            name: Build app
-            command: dotnet build Censo.API/Censo.API.sln
+       - checkout
+       - run: 
+          name: Restore packages
+          command: dotnet restore Censo.API/Censo.API.sln
+       - run:
+          name: Build app
+          command: dotnet build Censo.API/Censo.API.sln
