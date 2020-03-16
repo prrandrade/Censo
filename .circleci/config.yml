@@ -8,10 +8,10 @@
      steps:
        - checkout
        - run: 
-         name: "Restore pakcages"
-         command: dotnet restore
+            name: Restore pckages
+            command: dotnet restore
        - run:
-         name: "Build app"
-         command: dotnet build
+            name: Build app
+            command: dotnet build
          
          
