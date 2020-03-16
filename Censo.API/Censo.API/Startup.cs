@@ -2,6 +2,7 @@ namespace Censo.API
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using Domain.Interfaces.Data;
     using Infra.Data;
@@ -43,7 +44,6 @@ namespace Censo.API
                     var database = Environment.GetEnvironmentVariable("SQL_SERVER_DATABASE");
                     var user = Environment.GetEnvironmentVariable("SQL_SERVER_USER");
                     var password = Environment.GetEnvironmentVariable("SQL_SERVER_PASSWORD");
-
                     options.UseSqlServer($"Data Source={datasource};Initial Catalog={database};Persist Security Info=True;User ID={user};Password={password}");
                 });
             }
@@ -73,6 +73,12 @@ namespace Censo.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (Environment.GetCommandLineArgs().Contains("--migrate"))
+            {
+                app.ApplicationServices.GetService<DatabaseContext>().Database.Migrate();
+            }
+                
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

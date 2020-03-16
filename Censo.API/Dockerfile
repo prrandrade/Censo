@@ -6,8 +6,6 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Censo.API/Censo.API.csproj", "Censo.API/"]
-COPY ["Censo.Domain/Censo.Domain.csproj", "Censo.API/"]
-COPY ["Censo.Infra/Censo.Infra.csproj", "Censo.API/"]
 RUN dotnet restore "Censo.API/Censo.API.csproj"
 COPY . .
 WORKDIR "/src/Censo.API"
@@ -20,4 +18,4 @@ FROM base AS final
 EXPOSE 4321
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Censo.API.dll"]
+ENTRYPOINT ["dotnet", "Censo.API.dll", "--migrate"]
