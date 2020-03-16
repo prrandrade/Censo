@@ -78,6 +78,15 @@
 
         public async Task<IEnumerable<IEnumerable<DashboardModel>>> DashboardCount()
         {
+            if (IsInMemory())
+            {
+                return new[]
+                {
+                    new List<DashboardModel>(), new List<DashboardModel>(), 
+                    new List<DashboardModel>(), new List<DashboardModel>()
+                };
+            }
+
             var regions = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_region.Value) as Count, census_Region.Value as Value from census_answers inner join Census_Region on census_answers.RegionId = Census_Region.Id group by (census_region.Value)");
             var genders = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_gender.Value) as Count, census_gender.Value as Value from census_answers inner join Census_gender on census_answers.genderId = Census_gender.Id group by (census_gender.Value)");
             var schoolings = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_schooling.Value) as Count, census_schooling.Value as Value from census_answers inner join Census_schooling on census_answers.schoolingId = Census_schooling.Id group by (census_schooling.Value)");

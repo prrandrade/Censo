@@ -12,5 +12,7 @@
         Task<T> CreateAsync(T t);
 
         Task UpdateAsync(T t);
+
+        bool IsInMemory();
     }
 }

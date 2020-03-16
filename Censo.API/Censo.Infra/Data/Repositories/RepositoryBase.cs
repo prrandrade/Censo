@@ -39,5 +39,10 @@
             DatabaseContext.Entry(await DatabaseContext.Set<T>().FirstOrDefaultAsync(x => x.Id == t.Id)).CurrentValues.SetValues(t);
             await DatabaseContext.SaveChangesAsync();
         }
+
+        public bool IsInMemory()
+        {
+            return DatabaseContext.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory";
+        }
     }
 }

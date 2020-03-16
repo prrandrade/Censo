@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Censo.API.Controllers;
     using Censo.API.Hubs;
@@ -11,6 +12,7 @@
     using Microsoft.AspNetCore.Components.RenderTree;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using Moq;
     using Xunit;
 
@@ -23,7 +25,7 @@
         public AnswerControllerTest()
         {
             _repository = new Mock<IAnswerRepository>();
-            _hub = new Mock<DashboardHub>();
+            _hub = new Mock<DashboardHub>(new Mock<IHubContext<DashboardHub>>().Object);
             _controller = new AnswerController(_repository.Object, _hub.Object);
         }
 
@@ -108,6 +110,14 @@
         public async Task Post()
         {
             // arrange
+            var countList = new List<IEnumerable<DashboardModel>>
+            {
+                new List<DashboardModel>(),
+                new List<DashboardModel>(),
+                new List<DashboardModel>(),
+                new List<DashboardModel>()
+            }.AsEnumerable();
+            _repository.Setup(x => x.DashboardCount()).Returns(Task.FromResult(countList));
             var vm = new AnswerViewModel { Info = new AnswerInfoViewModel()};
             _repository.Setup(x => x.CreateWithParentsAndChidrenAsync(It.IsAny<AnswerModel>(), It.IsAny<IEnumerable<AnswerModel>>(), It.IsAny<IEnumerable<AnswerModel>>())).Returns(Task.FromResult(new AnswerModel()));
 
