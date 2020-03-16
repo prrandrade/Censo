@@ -20,6 +20,7 @@
     },
     "Censo.API": {
       "commandName": "Project",
+      "commandLineArgs": "--migrate",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {

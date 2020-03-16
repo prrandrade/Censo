@@ -17,5 +17,9 @@ RUN dotnet publish "Censo.API.csproj" -c Release -o /app/publish
 FROM base AS final
 EXPOSE 4321
 WORKDIR /app
+COPY wait-for-it.sh .
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Censo.API.dll", "--migrate"]
+
+
+
+

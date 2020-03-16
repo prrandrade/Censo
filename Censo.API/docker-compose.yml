@@ -4,7 +4,6 @@ services:
     image: "mcr.microsoft.com/mssql/server:latest"
     ports:
       - "1433:1433"      
-    user: "0:0"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Root@123
@@ -21,5 +20,7 @@ services:
       - SQL_SERVER_DATABASE=census
       - SQL_SERVER_USER=sa
       - SQL_SERVER_PASSWORD=Root@123
+    command: ./wait-for-it.sh sql:1433 --strict --timeout=300 -- dotnet Censo.API.dll --migrate
+
       
         
