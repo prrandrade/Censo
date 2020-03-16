@@ -12,7 +12,7 @@
           command: dotnet restore Censo.API/Censo.API.sln
        - run:
           name: Unit tests
-          command: ASPNETCORE_ENVIRONMENT=Test && dotnet test Censo.API/Censo.API.sln -v n --results-directory:test_coverage --collect:"Code Coverage"
+          command: ASPNETCORE_ENVIRONMENT=Test && dotnet test Censo.API/Censo.API.sln
        - run:
           name: Build app
           command: dotnet build Censo.API/Censo.API.sln -c Release -o /app/build
