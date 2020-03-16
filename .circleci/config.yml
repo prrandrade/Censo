@@ -1,17 +1,17 @@
  version: 2.1
 
- jobs:
-   build:
-     docker:
-       - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+jobs:
+    build:
+        docker:
+            - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
     
-     steps:
-       - checkout
-       - run: 
+    steps:
+        - checkout
+        - run: 
             name: Restore pckages
-            command: dotnet restore
-       - run:
+            command: dotnet restore "Censo.API/Censo.API.sln"
+        - run:
             name: Build app
-            command: dotnet build
+            command: dotnet build "Censo.API/Censo.API.sln"
          
          
