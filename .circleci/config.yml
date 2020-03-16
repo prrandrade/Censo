@@ -11,5 +11,9 @@
           name: Restore packages
           command: dotnet restore Censo.API/Censo.API.sln
        - run:
+          name: Unit tests
+          command: dotnet.exe test Censo.API/Censo.API.sln -v n --results-directory:test_coverage --collect:"Code Coverage"
+       - run:
           name: Build app
-          command: dotnet build Censo.API/Censo.API.sln
+          command: dotnet build Censo.API/Censo.API.sln -c Release -o /app/build
+          
