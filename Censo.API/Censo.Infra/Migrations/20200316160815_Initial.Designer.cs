@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Censo.Infra.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200314223329_Initial")]
+    [Migration("20200316160815_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

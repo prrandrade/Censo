@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Censo.API.Controllers;
+    using Censo.API.Hubs;
     using Censo.API.ViewModels;
     using Domain.Interfaces.Data;
     using Domain.Model;
@@ -16,12 +17,14 @@
     public class AnswerControllerTest
     {
         private readonly Mock<IAnswerRepository> _repository;
+        private readonly Mock<DashboardHub> _hub;
         private readonly AnswerController _controller;
 
         public AnswerControllerTest()
         {
             _repository = new Mock<IAnswerRepository>();
-            _controller = new AnswerController(_repository.Object);
+            _hub = new Mock<DashboardHub>();
+            _controller = new AnswerController(_repository.Object, _hub.Object);
         }
 
         [Fact]

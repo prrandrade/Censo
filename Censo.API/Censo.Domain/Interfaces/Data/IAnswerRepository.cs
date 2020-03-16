@@ -12,5 +12,6 @@
 
         Task<List<List<AnswerModel>>> ApplyGenealogyFilter(int id, int parentMaxLevel = 0);
 
+        Task<IEnumerable<IEnumerable<DashboardModel>>> DashboardCount();
     }
 }

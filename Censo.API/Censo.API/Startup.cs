@@ -4,7 +4,9 @@ namespace Censo.API
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using Domain.Interfaces.API;
     using Domain.Interfaces.Data;
+    using Hubs;
     using Infra.Data;
     using Infra.Data.Repositories;
     using Microsoft.AspNetCore.Builder;
@@ -48,6 +50,16 @@ namespace Censo.API
                 });
             }
 
+            // cors
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(_ => true)
+                    .AllowCredentials();
+            }));
+
             // repositories
             services.AddTransient<IRegionRepository, RegionRepository>();
             services.AddTransient<IGenderRepository, GenderRepository>();
@@ -59,8 +71,9 @@ namespace Censo.API
             services.AddControllers();
 
             // signal r server for real time dashboard
-            services.AddSignalRCore();
+            services.AddSignalR();
 
+            // swagger doc generation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Census API" });
@@ -68,11 +81,16 @@ namespace Censo.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            // dashboard hub
+            services.AddTransient<IHub, DashboardHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CorsPolicy");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -81,8 +99,6 @@ namespace Censo.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors();
 
             app.UseSwagger();
 
@@ -94,6 +110,7 @@ namespace Censo.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<DashboardHub>("/hub");
             });
 
             

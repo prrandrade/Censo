@@ -8,7 +8,7 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Root@123
   web:    
-    build: .
+    build: ./Censo.API
     depends_on:
       - sql
     ports:
@@ -21,6 +21,10 @@ services:
       - SQL_SERVER_USER=sa
       - SQL_SERVER_PASSWORD=Root@123
     command: ./wait-for-it.sh sql:1433 --strict --timeout=300 -- dotnet Censo.API.dll --migrate
-
-      
+  dash:
+    build: ./dashboard
+    depends_on:
+      - web
+    ports:
+      - "3000:3000"
         

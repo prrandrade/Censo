@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Dapper;
     using Domain;
     using Domain.Interfaces.Data;
     using Domain.Model;
@@ -14,7 +15,7 @@
     {
         public AnswerRepository(DatabaseContext databaseContext) : base(databaseContext)
         {
-            
+
         }
 
         public override async Task<AnswerModel> GetAsync(int id)
@@ -52,7 +53,7 @@
                     foreach (var parent in parents)
                     {
                         var updatedParent = await GetByNameAsync(parent.FirstName, parent.LastName) ?? await CreateAsync(parent);
-                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = updatedParent, Child = model});
+                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel { Parent = updatedParent, Child = model });
                         await DatabaseContext.SaveChangesAsync();
                     }
 
@@ -61,7 +62,7 @@
                     foreach (var child in children)
                     {
                         var updatedChild = await GetByNameAsync(child.FirstName, child.LastName) ?? await CreateAsync(child);
-                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel {Parent = model, Child = updatedChild});
+                        DatabaseContext.AnswerParentChild.Add(new AnswerParentChildModel { Parent = model, Child = updatedChild });
                         await DatabaseContext.SaveChangesAsync();
                     }
 
@@ -73,6 +74,16 @@
                 await transaction.RollbackAsync();
                 throw new ApplicationException("Error while saving this census anwser", ex);
             }
+        }
+
+        public async Task<IEnumerable<IEnumerable<DashboardModel>>> DashboardCount()
+        {
+            var regions = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_region.Value) as Count, census_Region.Value as Value from census_answers inner join Census_Region on census_answers.RegionId = Census_Region.Id group by (census_region.Value)");
+            var genders = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_gender.Value) as Count, census_gender.Value as Value from census_answers inner join Census_gender on census_answers.genderId = Census_gender.Id group by (census_gender.Value)");
+            var schoolings = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_schooling.Value) as Count, census_schooling.Value as Value from census_answers inner join Census_schooling on census_answers.schoolingId = Census_schooling.Id group by (census_schooling.Value)");
+            var ethnicities = await DatabaseContext.Database.GetDbConnection().QueryAsync<DashboardModel>("select count(census_ethnicity.Value) as Count, census_ethnicity.Value as Value from census_answers inner join Census_ethnicity on census_answers.ethnicityId = Census_ethnicity.Id group by (census_ethnicity.Value)");
+
+            return new[] { regions, genders, schoolings, ethnicities };
         }
 
         #region Queries for filtering
@@ -116,10 +127,10 @@
         public async Task<List<List<AnswerModel>>> ApplyGenealogyFilter(int id, int parentMaxLevel = 0)
         {
             // the first node in a genealogic tree is the passed target
-            var tree = new List<List<AnswerModel>> {new List<AnswerModel>()};
+            var tree = new List<List<AnswerModel>> { new List<AnswerModel>() };
             tree[0].Add(await GetAsync(id));
 
-            var childIds = new[]{id};
+            var childIds = new[] { id };
             // now we will retrieve the parent levels
             for (var i = 0; i < parentMaxLevel; i++)
             {
@@ -134,6 +145,8 @@
             return tree;
         }
 
+
+
         #endregion
 
         #region Auxiliary private methods
@@ -145,7 +158,7 @@
                 .FirstOrDefault(x => x.FirstName == firstName && x.LastName == lastName);
         }
 
-        private async Task<int[]> ApplyGenealogyGetParentsAsync(params int[]ids)
+        private async Task<int[]> ApplyGenealogyGetParentsAsync(params int[] ids)
         {
             return await DatabaseContext.AnswerParentChild.Where(x => ids.ToList().Contains(x.ChildId)).Select(x => x.ParentId).ToArrayAsync();
         }

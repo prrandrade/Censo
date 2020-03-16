@@ -2,10 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Domain.Interfaces.API;
     using Domain.Interfaces.Data;
+    using Hubs;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
+    using Newtonsoft.Json;
     using ViewModels;
 
     [ApiController]
@@ -13,9 +18,11 @@
     public class AnswerController : ControllerBase
     {
         private readonly IAnswerRepository _repository;
+        private readonly IHub _dashboardHub;
 
-        public AnswerController(IAnswerRepository repository)
+        public AnswerController(IAnswerRepository repository, IHub dashboardHub)
         {
+            _dashboardHub = dashboardHub;
             _repository = repository;
         }
 
@@ -78,7 +85,12 @@
                 var children = value.RetrieveAnswerModelChildren();
 
                 var result = await _repository.CreateWithParentsAndChidrenAsync(census, parents, children);
-                return CreatedAtAction(nameof(Get), new {id = result.Id}, result.ToAnswerViewModel());
+
+                // updatnng information for dashboard
+                var results = (await _repository.DashboardCount()).ToList();
+
+                await _dashboardHub.SendMessage(new { regions = results[0], genders = results[1], schoolings = results[2], ethnicities = results[3] });
+                return CreatedAtAction(nameof(Get), new { id = result.Id }, result.ToAnswerViewModel());
             }
             catch (Exception ex)
             {

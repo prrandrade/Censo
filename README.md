@@ -15,7 +15,7 @@ Os testes unitários, por sua vez, usam o **Moq**  para a correta injeção de d
 
 De forma simples, estamos usando imagens docker do .NET Core e do MSSQL para a rápida montagem do ambiente, via **dockerfile** e **docker-compose**. O ambiente pode ser montado e desmontado facilmente e os dados iniciais do banco de dados são escritos na execução da API, que por sua vez espera através de um script a disponibilização do banco.
 
-O banco de daods sobe na porta 1433, que é a porta padrão do SQL Server, e pode ser acessado de forma externa (ou seja, a porta é exportada para fora da imagem). Já a API é disponibilizada para acesso externo pela forma 8080.
+O banco de dados sobe na porta 1433, que é a porta padrão do SQL Server, e pode ser acessado de forma externa (ou seja, a porta é exportada para fora da imagem). Já a API é disponibilizada para acesso externo pela forma 8080.
 
 Para que ambos os conteiners (banco e API) sejam executados, basta executar o comando ```docker-compose up``` dentro da pasta **Censo.API**.
 
@@ -25,7 +25,7 @@ Estamos falando de uma API restful feita sem autenticação, para fins de simpli
 
 ### Integração com serviço de CI
 
-O repositório está integrado com o **CIrcleCI**, e o arquivo de configuração **./circleci/config.yml** é usado para a integração contínua. De forma simples, ele faz o build da solução e executa os testes unitários e integrados.
+O repositório está integrado com o **CircleCI**, e o arquivo de configuração **./circleci/config.yml** é usado para a integração contínua. De forma simples, ele faz o build da solução e executa os testes unitários e integrados.
 
 
 
