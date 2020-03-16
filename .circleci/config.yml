@@ -3,8 +3,15 @@
  jobs:
    build:
      docker:
-       - image: circleci/ruby:2.4.1  
+       - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
     
      steps:
        - checkout
-       - run: dotnet build Censo.API/Censo.API
+       - run: 
+         name: Restore pakcages   
+         command: dotnet restore
+       - run:
+         name: Build app
+         command: dotnet build
+         
+         
