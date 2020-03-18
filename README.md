@@ -11,7 +11,7 @@ A API usa o **Entity Framework Core** como framework de ORM para comunicação c
 
 Os testes unitários, por sua vez, usam o **Moq**  para a correta injeção de dependência do que não será testado, afinal estamos falando dos testes *unitários*. Hoje são **27 testes integrados** e **58 testes unitários** escritos, totalizando mais de 80% de cobertura total de código.
 
-### Dashbooard
+### Dashboard
 
 O dashboard foi feito de forma bem básica com React, e se comunica com o projeto de API usando SignalR Core. A vantagem deste é que não precisamos ficar atualizando a página para receber novas informações. Quando uma nova resposta do censo é feita, informações gerais sobre as respostas são enviadas para o dashboard sem a necessidade de intervenção.
 
@@ -32,4 +32,4 @@ O banco de dados sobe na porta 1433, que é a porta padrão do SQL Server, e pod
 - http://localhost:8080/swagger para a documentação da API
 - http://localhost:3000/ para o acesso ao Dashboard.
 
-Para que ambos os conteiners sejam executados, basta executar o comando ```docker-compose up``` na raíz do repositório.
+Para que ambos os conteiners sejam executados, basta executar o comando ```docker-compose up``` na raíz do repositório. 
