@@ -1,5 +1,6 @@
 ﻿namespace Censo.IntegrationTest
 {
+    using System;
     using API;
     using API.ViewModels;
     using Domain;
@@ -12,10 +13,10 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
     using Xunit;
 
-    [Collection("Endpoints")]
-    public class SearchControllerTest
+    public class SearchControllerTest : IDisposable
     {
         private readonly HttpClient _client;
         private readonly DatabaseContext _context;
@@ -23,13 +24,17 @@
 
         public SearchControllerTest()
         {
+            var builder = new ConfigurationBuilder();
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                {new KeyValuePair<string, string>("databaseName", "search")});
+
             var server = new TestServer(new WebHostBuilder()
+                .UseConfiguration(builder.Build())
                 .UseEnvironment("Test")
                 .UseStartup<Startup>());
 
             _client = server.CreateClient();
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
-            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
         }
 
         [Fact]
@@ -174,6 +179,13 @@
             _context.Answer.Add(new AnswerModel { FirstName = "Yara", LastName = "Lopez", RegionId = 3, EthnicityId = 1, GenderId = 1, SchoolingId = 5 });
 
             await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
+            _context.Database.EnsureDeleted();
+            _context?.Dispose();
         }
     }
 }

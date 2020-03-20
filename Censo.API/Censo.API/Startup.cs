@@ -36,7 +36,9 @@ namespace Censo.API
             // infra services
             if (CurrentEnvironment.IsEnvironment("Test"))
             {
-                services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase("database").ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
+                services.AddDbContext<DatabaseContext>(options => options
+                    .UseInMemoryDatabase(Configuration["databaseName"])
+                    .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
             }
             else
             {

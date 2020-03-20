@@ -12,10 +12,10 @@
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
     using Xunit;
 
-    [Collection("Endpoints")]
-    public class SchoolingControlerTest
+    public class SchoolingControlerTest : IDisposable
     {
         private readonly HttpClient _client;
         private readonly DatabaseContext _context;
@@ -23,13 +23,17 @@
 
         public SchoolingControlerTest()
         {
+            var builder = new ConfigurationBuilder();
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                {new KeyValuePair<string, string>("databaseName", "schooling")});
+
             var server = new TestServer(new WebHostBuilder()
+                .UseConfiguration(builder.Build())
                 .UseEnvironment("Test")
                 .UseStartup<Startup>());
 
             _client = server.CreateClient();
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
-            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
             _address = "/api/census/schooling";
         }
 
@@ -37,7 +41,7 @@
         public async Task Get()
         {
             // arrange
-            var model = new SchoolingModel {Id = 1, Value = "Teste"};
+            var model = new SchoolingModel { Id = 1, Value = "Teste" };
             _context.Schoolings.Add(model);
             await _context.SaveChangesAsync();
 
@@ -97,8 +101,8 @@
         public async Task Put()
         {
             // arrange
-            var model = new SchoolingModel {Id = 4, Value = "Teste 4"};
-            var newModel = new SchoolingModel {Id = 4, Value = "Novo Teste 4"};
+            var model = new SchoolingModel { Id = 4, Value = "Teste 4" };
+            var newModel = new SchoolingModel { Id = 4, Value = "Novo Teste 4" };
             _context.Schoolings.Add(model);
             await _context.SaveChangesAsync();
 
@@ -109,6 +113,13 @@
             // assert
             response.EnsureSuccessStatusCode();
             Assert.Equal(newModel.Value, model.Value);
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
+            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
+            _context?.Dispose();
         }
     }
 }

@@ -1,21 +1,21 @@
 ﻿namespace Censo.IntegrationTest
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
     using API;
     using Domain.Model;
     using Infra.Data;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.TestHost;
     using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
     using Xunit;
 
-    [Collection("Endpoints")]
-    public class GenderControllerTest
+    public class GenderControllerTest : IDisposable
     {
         private readonly HttpClient _client;
         private readonly DatabaseContext _context;
@@ -23,13 +23,17 @@
 
         public GenderControllerTest()
         {
+            var builder = new ConfigurationBuilder();
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                {new KeyValuePair<string, string>("databaseName", "gender")});
+
             var server = new TestServer(new WebHostBuilder()
+                .UseConfiguration(builder.Build())
                 .UseEnvironment("Test")
                 .UseStartup<Startup>());
 
             _client = server.CreateClient();
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
-            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
             _address = "/api/census/gender";
         }
 
@@ -109,6 +113,13 @@
             // assert
             response.EnsureSuccessStatusCode();
             Assert.Equal(newModel.Value, model.Value);
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
+            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
+            _context?.Dispose();
         }
     }
 }

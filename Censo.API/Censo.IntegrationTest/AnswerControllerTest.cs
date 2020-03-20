@@ -6,7 +6,9 @@
     using Infra.Data;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.TestHost;
+    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
@@ -14,8 +16,7 @@
     using System.Threading.Tasks;
     using Xunit;
 
-    [Collection("Endpoints")]
-    public class AnswerControllerTest
+    public class AnswerControllerTest : IDisposable
     {
         private readonly HttpClient _client;
         private readonly DatabaseContext _context;
@@ -23,13 +24,17 @@
 
         public AnswerControllerTest()
         {
+            var builder = new ConfigurationBuilder();
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+                {new KeyValuePair<string, string>("databaseName", "anwser")});
+
             var server = new TestServer(new WebHostBuilder()
                 .UseEnvironment("Test")
+                .UseConfiguration(builder.Build())
                 .UseStartup<Startup>());
 
             _client = server.CreateClient();
             _context = server.Host.Services.GetService(typeof(DatabaseContext)) as DatabaseContext;
-            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
             _address = "/api/census/answer";
         }
 
@@ -154,6 +159,12 @@
             Assert.Equal(model.ChildrenInfo.First().FirstName, result.ChildrenInfo.First().FirstName);
         }
 
-        
+
+        public void Dispose()
+        {
+            _client?.Dispose();
+            _context.Database.EnsureDeleted(); // nedded for 'zeroing' the inmemory database between tests
+            _context.Dispose();
+        }
     }
 }
