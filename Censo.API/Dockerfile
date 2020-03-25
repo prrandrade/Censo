@@ -18,6 +18,7 @@ FROM base AS final
 EXPOSE 4321
 WORKDIR /app
 COPY wait-for-it.sh .
+RUN ["chmod", "+x", "./wait-for-it.sh"]
 COPY --from=publish /app/publish .
 
 
